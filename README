@@ -98,7 +98,7 @@ rkunpack        unpack update.img files (not partition.img (!))
 usage: rkunpack file
 
     Supports both RKAF and RKFW (which contains an embedded RKAF file).
-    You can user rkunpack on extracted embedded-update.img file too
+    You can use rkunpack on extracted embedded-update.img file too
 
 
 rkpad           pad file with zeroes
