@@ -104,7 +104,7 @@ static const struct t_pid {
     { 0, "" },
 };
 
-static uint8_t cmd[31], res[13], buf[RKFT_BLOCKSIZE];
+static uint8_t cmd[31], res[13], buf[RKFT_BLOCKSIZE], buf2[RKFT_BLOCKSIZE];
 static libusb_context *c;
 static libusb_device_handle *h = NULL;
 static int tmp;
@@ -132,6 +132,7 @@ static void usage(void) {
 //          "\trkflashtool n offset nbytes   <infile  \twrite SDRAM\n"
           "\trkflashtool r offset nsectors >outfile \tread flash\n"
           "\trkflashtool w offset nsectors <infile  \twrite flash\n"
+          "\trkflashtool v offset nsectors <infile  \tverify flash\n"
 //          "\trkflashtool f                 >outfile \tread fuses\n"
 //          "\trkflashtool g                 <infile  \twrite fuses\n"
           "\trkflashtool p >file             \tfetch parameters\n"
@@ -186,6 +187,7 @@ int main(int argc, char **argv) {
     case 'e':
     case 'r': 
     case 'w': 
+    case 'v': 
     case 'm':
     case 'i':
         if (argc != 2) usage();
@@ -271,6 +273,24 @@ int main(int argc, char **argv) {
             send_buf(RKFT_BLOCKSIZE);
             recv_res();
 
+            offset += RKFT_OFF_INCR;
+            size   -= RKFT_OFF_INCR;
+        }
+        break;
+    case 'v':   /* Verify FLASH */
+        while (size > 0) {
+            info("checking flash memory at offset 0x%08x\n", offset);
+
+            if (read(0, buf2, RKFT_BLOCKSIZE) <= 0)
+                fatal("premature end-of-file reached.\n");
+
+            send_cmd(RKFT_CMD_READLBA, offset, RKFT_OFF_INCR);
+            recv_buf(RKFT_BLOCKSIZE);
+            recv_res();
+
+            if (memcmp(buf, buf2, RKFT_BLOCKSIZE))
+                fatal("Check error! Low level format required?\n");
+            
             offset += RKFT_OFF_INCR;
             size   -= RKFT_OFF_INCR;
         }
