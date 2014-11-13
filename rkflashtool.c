@@ -172,6 +172,7 @@ int main(int argc, char **argv) {
     const struct t_pid *ppid = pidtab;
     int offset = 0, size = 0;
     char action;
+    char* numend;
 
     info("rkflashtool v%d.%d\n", RKFLASHTOOL_VERSION_MAJOR,
                                  RKFLASHTOOL_VERSION_MINOR);
@@ -191,8 +192,12 @@ int main(int argc, char **argv) {
     case 'm':
     case 'i':
         if (argc != 2) usage();
-        offset = strtoul(argv[0], NULL, 0);
-        size   = strtoul(argv[1], NULL, 0);
+        offset = strtoul(argv[0], &numend, 0);
+        if (strlen(argv[0]) + argv[0] != numend)
+            fatal("Can't parse argument `offset`\n");
+        size   = strtoul(argv[1], &numend, 0);
+        if (strlen(argv[1]) + argv[1] != numend)
+            fatal("Can't parse argument `size`\n");
         break;
     case 'p':
         if (argc) usage();

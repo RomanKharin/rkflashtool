@@ -37,6 +37,7 @@ All available commands:
 rkflashtool b                         reboot device
 rkflashtool r offset size >file       read flash
 rkflashtool w offset size <file       write flash
+rkflashtool v offset size <file       verify flash
 
 rkflashtool m offset size >file       read 0x80 bytes DRAM
 rkflashtool i offset blocks >file     read IDB flash
@@ -44,8 +45,10 @@ rkflashtool p >file                   fetch parameters
 
 rkflashtool e offset size             erase flash (fill with 0xff)
 
-offset and size are in units (blocks) of 512 bytes (!)
+Note 1: Offset and size are in units (blocks) of 512 bytes (!)
 
+Note 2: You can specify values in decimal, octal or hexadecimal. Beware
+numbers with leading zero as 0145 != 145.
 
 
 Also included:
@@ -94,8 +97,8 @@ rkunpack        unpack update.img files (not partition.img (!))
 
 usage: rkunpack file
 
-    supports both RKAF and RKFW (which contains an embedded RKAF file)
-
+    Supports both RKAF and RKFW (which contains an embedded RKAF file).
+    You can user rkunpack on extracted embedded-update.img file too
 
 
 rkpad           pad file with zeroes
