@@ -259,7 +259,9 @@ int main(int argc, char **argv) {
     case 'b':
         if (argc > 1) usage();
         else if (argc == 1)
-            flag = strtoul(argv[0], NULL, 0);
+            flag = strtoul(argv[0], &numend, 0);
+            if (strlen(argv[0]) + argv[0] != numend)
+                fatal("Can't parse argument `flag`\n");
         break;
     case 'l':
     case 'L':
@@ -273,8 +275,12 @@ int main(int argc, char **argv) {
         if (argc == 1) {
             partname = argv[0];
         } else {
-            offset = strtoul(argv[0], NULL, 0);
-            size   = strtoul(argv[1], NULL, 0);
+            offset = strtoul(argv[0], &numend, 0);
+            if (strlen(argv[0]) + argv[0] != numend)
+                fatal("Can't parse argument `offset`\n");
+            size   = strtoul(argv[1], &numend, 0);
+            if (strlen(argv[1]) + argv[1] != numend)
+                fatal("Can't parse argument `size`\n");
         }
         break;
     case 'm':
